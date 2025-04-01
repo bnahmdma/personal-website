@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>خودآموز طراحی وب</title>
+    <style>
+        .divTable {
+            display: table;
+            width: 1024px;
+            font-size: 13pt;
+            font-family: tahoma;
+            margin-left: auto;
+            margin-right: auto;
+            direction: rtl;
+        }
+        .divTableRow {
+            display: table-row;
+        }
+        .divTableCell {
+            display: table-cell;
+            border: 1px solid #999999;
+            padding: 3px 10px;
+        }
+        .hidden { display: none; }
+        .btn {
+            margin-top: 10px;
+            padding: 10px;
+            cursor: pointer;
+            border: none;
+            color: white;
+            border-radius: 5px;
+        }
+        .sort-btn { background-color: green; }
+        .reset-btn { background-color: orange; }
+        .sidebar {
+            width: 300px;
+            margin-left: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            display: inline-block;
+            vertical-align: top;
+        }
+        .php-code-box {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 10px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="divTable">
+        <header class="divTableRow">
+            <div class="divTableCell">لوگوی سایت</div>
+        </header>
+
+        <nav class="divTable">
+            <ul class="divTableRow">
+                <li class="divTableCell"><a class="set_style_link" href="#">صفحه اصلی</a></li>
+                <li class="divTableCell"><a class="set_style_link" href="#">درباره ما</a></li>
+                <li class="divTableCell"><a class="set_style_link" href="#" onclick="showProducts()">محصولات</a></li>
+                <li class="divTableCell"><a class="set_style_link" href="#">اخبار</a></li>
+                <li class="divTableCell"><a class="set_style_link" href="#">تماس با ما</a></li>
+            </ul>
+        </nav>
+
+        <section class="divTable">
+            <div class="divTableRow">
+                <aside class="divTableCell" style="width: 25%;">بخش امکانات سایت</aside>
+                <section class="divTableCell" style="width: 45%;">
+                    <div id="productsSection" class="hidden">
+                        <table id="productsTable">
+                            <thead>
+                                <tr>
+                                    <th>نام محصول</th>
+                                    <th onclick="sortTable(1)">قیمت (تومان) ⬆⬇</th>
+                                    <th onclick="sortTable(2)">وزن (گرم) ⬆⬇</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody">
+                                <tr><td>سیب قرمز</td><td>39000</td><td>200</td></tr>
+                                <tr><td>موز</td><td>79000</td><td>150</td></tr>
+                                <tr><td>خیار گلخانه‌ای</td><td>47000</td><td>180</td></tr>
+                                <tr><td>نارنگی</td><td>32000</td><td>220</td></tr>
+                                <tr><td>انار</td><td>39000</td><td>250</td></tr>
+                            </tbody>
+                        </table>
+                        <button class="btn sort-btn" onclick="bubbleSortProducts()">Bubble Sort</button>
+                        <button class="btn reset-btn" onclick="resetTable()">برگشت به حالت اولیه</button>
+                    </div>
+                </section>
+
+                <aside class="sidebar hidden" id="phpCodeBox">
+                    <h3>کد PHP برای بابل سورت</h3>
+                    <div class="php-code-box">
+                        <?php
+                        $products = [
+                            ["name" => "سیب قرمز", "price" => 39000, "weight" => 200],
+                            ["name" => "موز", "price" => 79000, "weight" => 150],
+                            ["name" => "خیار گلخانه‌ای", "price" => 47000, "weight" => 180],
+                            ["name" => "نارنگی", "price" => 32000, "weight" => 220],
+                            ["name" => "انار", "price" => 39000, "weight" => 250]
+                        ];
+
+                        function bubbleSort($arr, $col) {
+                            $n = count($arr);
+                            for ($i = 0; $i < $n; $i++) {
+                                for ($j = 0; $j < $n - 1; $j++) {
+                                    if ($arr[$j][$col] > $arr[$j + 1][$col]) {
+                                        $temp = $arr[$j];
+                                        $arr[$j] = $arr[$j + 1];
+                                        $arr[$j + 1] = $temp;
+                                    }
+                                }
+                            }
+                            return $arr;
+                        }
+
+                        $sortedProducts = bubbleSort($products, 1);
+                        echo "<pre>";
+                        print_r($sortedProducts);
+                        echo "</pre>";
+                        ?>
+                    </div>
+                </aside>
+            </div>
+        </section>
+
+        <footer class="divTable">
+            <div class="divTableRow">
+                <article class="divTableCell">مالک مادی و معنوی سایت</article>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        let originalRows = Array.from(document.querySelectorAll("#tableBody tr"));
+        
+        // Function to show products and PHP code
+        function showProducts() {
+            document.getElementById("productsSection").classList.toggle("hidden");
+            document.getElementById("phpCodeBox").classList.toggle("hidden");
+        }
+
+        // Bubble sort function for table rows
+        function bubbleSortProducts() {
+            let table = document.getElementById("tableBody");
+            let rows = Array.from(table.rows);
+
+            rows.sort((a, b) => {
+                let x = parseInt(a.cells[1].innerText);
+                let y = parseInt(b.cells[1].innerText);
+                return y - x;
+            });
+
+            table.innerHTML = "";
+            rows.forEach(row => table.appendChild(row));
+        }
+
+        // Reset table to the original order
+        function resetTable() {
+            let table = document.getElementById("tableBody");
+            table.innerHTML = "";
+            originalRows.forEach(row => table.appendChild(row.cloneNode(true)));
+        }
+    </script>
+</body>
+</html>
